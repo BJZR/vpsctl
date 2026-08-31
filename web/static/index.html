@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="description" content="vpsctl - VPS Web Control Panel">
+  <title>vpsctl</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/vendor/xterm.css">
+  <noscript>
+    <style>.app-layout,.login-page{display:none}</style>
+  </noscript>
+</head>
+<body>
+
+  <noscript>
+    <div class="no-js-message">
+      <div>
+        <h2>JavaScript Required</h2>
+        <p>vpsctl requires JavaScript to function. Please enable it in your browser settings.</p>
+      </div>
+    </div>
+  </noscript>
+
+  <!-- Login Page -->
+  <div id="login-page" class="login-page" style="display:none">
+    <div class="login-card">
+      <div class="logo">
+        <img src="/static/img/logo.svg" alt="vpsctl">
+        <h1>vps<span>ctl</span></h1>
+      </div>
+      <h2>Sign in to your account</h2>
+      <div id="login-error" class="login-error"></div>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-username">Username</label>
+          <input type="text" id="login-username" class="form-input" placeholder="root" autocomplete="username" required>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="Password" autocomplete="current-password" required>
+        </div>
+        <div class="form-group" id="totp-group" style="display:none">
+          <label for="login-totp">Authenticator Code</label>
+          <input type="text" id="login-totp" class="form-input form-input-mono" placeholder="000000" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}">
+        </div>
+        <button type="submit" id="login-submit" class="btn btn-primary btn-block">
+          <span id="login-btn-text">Sign In</span>
+          <span id="login-btn-spinner" class="spinner spinner-sm" style="display:none"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- App Layout -->
+  <div id="app-layout" class="app-layout" style="display:none">
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">&#9776;</button>
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <img src="/static/img/logo.svg" alt="vpsctl">
+        <h1>vps<span>ctl</span></h1>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <div class="nav-section">Main</div>
+        <a class="nav-link active" data-route="/dashboard">
+          <span class="icon">&#9632;</span> Dashboard
+        </a>
+        <a class="nav-link" data-route="/terminal">
+          <span class="icon">&#9618;</span> Terminal
+        </a>
+        <div class="nav-section">Management</div>
+        <a class="nav-link" data-route="/files">
+          <span class="icon">&#128193;</span> Files
+        </a>
+        <a class="nav-link" data-route="/docker">
+          <span class="icon">&#9881;</span> Docker
+        </a>
+        <a class="nav-link" data-route="/services">
+          <span class="icon">&#9889;</span> Services
+        </a>
+        <div class="nav-section">Account</div>
+        <a class="nav-link" data-route="/settings">
+          <span class="icon">&#9883;</span> Settings
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="user-avatar" id="user-avatar">U</div>
+          <div class="user-info">
+            <div class="user-name" id="user-name">User</div>
+            <div class="user-role">Administrator</div>
+          </div>
+          <button class="btn-logout" id="btn-logout" title="Logout">&#10140;</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content"></main>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Confirm Dialog -->
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-dialog">
+      <div class="confirm-icon" id="confirm-icon">&#9888;</div>
+      <h3 id="confirm-title">Are you sure?</h3>
+      <p id="confirm-message">This action cannot be undone.</p>
+      <div class="confirm-actions">
+        <button class="btn btn-ghost" id="confirm-cancel">Cancel</button>
+        <button class="btn btn-danger" id="confirm-ok">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/vendor/xterm.min.js"></script>
+  <script src="/static/vendor/addon-fit.min.js"></script>
+  <script src="/static/js/app.js"></script>
+  <script src="/static/js/dashboard.js"></script>
+  <script src="/static/js/terminal.js"></script>
+  <script src="/static/js/files.js"></script>
+  <script src="/static/js/docker.js"></script>
+  <script src="/static/js/services.js"></script>
+  <script src="/static/js/settings.js"></script>
+</body>
+</html>

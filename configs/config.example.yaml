@@ -1,0 +1,33 @@
+# vpsctl configuration example
+# Copy to /etc/vpsctl/config.yaml and adjust. All values can be overridden
+# with VPSCTL_* environment variables (e.g. VPSCTL_PORT=8080).
+
+server:
+  host: "0.0.0.0"
+  port: 8443
+
+# TLS via own certificate (mutual TLS / Let's Encrypt assumed)
+tls_cert_file: "/etc/vpsctl/server.crt"
+tls_key_file: "/etc/vpsctl/server.key"
+
+# JWT signing secret. Generate with: openssl rand -base64 32
+# If empty on first run, the binary generates a random one and stores it in data_dir.
+jwt_secret: ""
+
+# Base directory exposed for the file manager (default "/").
+base_dir: "/"
+
+# Optional. If non-empty, only these IPs / CIDRs may access the panel.
+allowed_ips:
+  - "127.0.0.1"
+  # - "203.0.113.0/24"
+
+# Login hardening
+max_login_attempts: 5
+lockout_duration: "15m"
+
+# Data directory (users, tokens, metrics history)
+data_dir: "/var/lib/vpsctl"
+
+# TOTP (2FA) disabled by default, enabled per-user in the panel / API.
+totp_enabled: false

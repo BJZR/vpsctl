@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  vpsctl:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VERSION: dev
+        COMMIT: local
+        DATE: "${BUILD_DATE:-$(date -u +%Y-%m-%dT%H:%M:%SZ)}"
+    container_name: vpsctl
+    restart: unless-stopped
+    ports:
+      - "8443:8443"
+    volumes:
+      # Docker socket for container management
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Persistent data storage
+      - vpsctl-data:/var/lib/vpsctl
+      # Configuration (optional — mount your own config)
+      - ./configs:/etc/vpsctl:ro
+      # Logs
+      - vpsctl-logs:/var/log/vpsctl
+    environment:
+      - VPSCTL_CONFIG=/etc/vpsctl/config.yaml
+      - VPSCTL_DATA_DIR=/var/lib/vpsctl
+      - VPSCTL_LOG_LEVEL=info
+      - TZ=UTC
+    networks:
+      - vpsctl
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://localhost:8443/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+        reservations:
+          memory: 128M
+          cpus: "0.25"
+    security_opt:
+      - no-new-privileges:true
+
+  # Optional: Nginx reverse proxy for production-like setup
+  nginx:
+    image: nginx:alpine
+    container_name: vpsctl-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./configs/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - vpsctl-certs:/etc/nginx/certs:ro
+    depends_on:
+      vpsctl:
+        condition: service_healthy
+    networks:
+      - vpsctl
+    profiles:
+      - proxy
+
+volumes:
+  vpsctl-data:
+    driver: local
+  vpsctl-logs:
+    driver: local
+  vpsctl-certs:
+    driver: local
+
+networks:
+  vpsctl:
+    driver: bridge
